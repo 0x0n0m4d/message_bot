@@ -1,6 +1,7 @@
 # dict to store clients numbers
 clients = {
-    "id": "",
+    "usr_id": "",
+    "cv_id": "",
     "number": ""
 }
 
