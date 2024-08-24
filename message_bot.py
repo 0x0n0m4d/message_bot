@@ -1,4 +1,5 @@
 # @info: requests must be in a maximum of 5 threads
+from random import randrange
 
 # class to save clients numbers
 @dataclass
@@ -8,7 +9,7 @@ class Numbers:
 
 # Delay in seconds to send message to client
 def random_delay():
-    # @todo: create a number randomizer between 1 and 20
+    return randrange(1, 20)
 
 # Add a tag to client number
 def add_tag(str num):

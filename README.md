@@ -7,4 +7,4 @@ Then, the bot will go through this database and will send delayed messages to ea
 - [ ] Create the request that get possible ids of users;
 - [ ] Create the request that get numbers of users;
 - [ ] Save the claimed info in a database;
-- [ ] Create a simple number randomizer;
+- [x] Create a simple number randomizer;
