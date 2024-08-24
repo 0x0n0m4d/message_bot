@@ -3,3 +3,6 @@
 
 # ignore request data
 request.har
+
+# ignore cache
+__pycache__/
