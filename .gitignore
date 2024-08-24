@@ -1,1 +1,5 @@
+# ignore unneeded creds
 .env
+
+# ignore request data
+request.har
