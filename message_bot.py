@@ -12,8 +12,9 @@ def random_delay():
 
 
 # Add a tag to client number
-def add_tag(str num):
+def add_tag(num):
     # @todo: create a function to add tags called 'Jhony' to numbers
+    return num
 
 
 # get headers from request har file
@@ -34,10 +35,7 @@ def get_headers():
         if header["name"] == "Accept":
             res["Accept"] = header["value"]
 
-        if header["name"] == "Referer":
-            res["Referer"] = header["value"]
-
-    if res["User_Agent"] == "" or res["Accept"] == "" or res["Referer"] == "":
+    if res["User-Agent"] == "" or res["Accept"] == "":
         raise NameError('Missing Important Headers!')
 
     return res
@@ -53,7 +51,7 @@ def get_cookies():
     har_cookies = har_data["log"]["entries"][0]["request"]["cookies"]
 
     # get important cookies
-    res = classes.cookies
+    res = dicts.cookies
     for cookie in har_cookies:
         if cookie["name"] == "session_id":
             res["session_id"] = cookie["value"]
@@ -68,8 +66,9 @@ def get_cookies():
 
 
 # Get number of current client id
-def get_number(str id):
+def get_number(id):
     # @todo: create a function to requests numbers of current id
+    return id
 
 
 # search clients and save their numbers in a simple database
@@ -77,7 +76,9 @@ def get_clients():
     cookies = get_cookies()
     headers = get_headers()
     link = "https://www.catho.com.br/curriculos/busca/?q=vendas&pais_id=31&estado_id[-1]=-1&regiaoId[-1]=-1&cidade_id[-1]=-1&zona_id[-1]=-1&page=1&onde_buscar=todo_curriculo&como_buscar=todas_palavras&tipoBusca=busca_palavra_chave&idade[1]=1&empregado=false&dataAtualizacao=30&buscaLogSentencePai=111e5bd0-8cee-4ed4-8ff3-51f9669f13f3"
-    response = requests.get(link, cookies, headers)
+    response = requests.get(link, cookies=cookies, headers=headers)
+    print(response.status_code)
+    print(response.content)
     # get_number("")
     # @todo: this should get id of clients
     # @todo: and get numbers of ids
@@ -97,5 +98,5 @@ def main():
     send_messages()
 
 
-if '__name__' == __main__:
+if __name__ == "__main__":
     main()

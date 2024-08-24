@@ -1,18 +1,17 @@
 # dict to store clients numbers
 clients = {
-    "id": ""
+    "id": "",
     "number": ""
 }
 
 # dict to store cookies
 cookies = {
-    "session_id": ""
+    "session_id": "",
     "cactk": ""
 }
 
 # dict to store headers
 headers = {
-    "User_Agent": ""
+    "User-Agent": "",
     "Accept": ""
-    "Referer": ""
 }
