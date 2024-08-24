@@ -79,22 +79,27 @@ def get_ids(cookies, headers, page):
 
 
 # Get number of current client id
-def get_number():
-    # @todo: create a function to requests numbers of current id
-    # zRLIikUDz3DyZs6Bje2om
-    return id
+def get_number(cookies, headers, cv_id, usr_id, hash):
+    link = "https://www.catho.com.br/curriculos/api/resumes/"+ str(cv_id) +"/candidate/"+ str(usr_id) +"/phones/" + hash
+    response = requests.get(link, cookies=cookies, headers={"User-Agent": headers["User-Agent"], "Accept": "application/json, text/plain, */*"})
+    try:
+        usr_num = json.loads(response.text)["phones"][0]
+    except:
+        usr_num = ""
+
+    return usr_num
 
 
 # search clients and save their numbers in a simple database
 def get_clients():
     cookies = get_cookies()
     headers = get_headers()
-    print("\x1b[34m[󰀖] Getting clients ids!!!\x1b[0m")
+    print("\x1b[34m[󰀖] Gathering clients data!!!\x1b[0m")
     for page in tqdm(range(1, 1000)):
-        time.sleep(2)
         data = get_ids(cookies, headers, page)
         try:
             infos = data["props"]['pageProps']['resumeSearch']['resumeSearchResult']['resumes']
+            hashPage = data["props"]['pageProps']["hashPage"]
         except:
             # the loop should always be breaked
             break
@@ -107,11 +112,15 @@ def get_clients():
             usr = dicts.clients
             usr["usr_id"] = client["usr_id"]
             usr["cv_id"] = client["cv_id"]
-            clients.append(usr)
+            usr["number"] = get_number(cookies, headers, client["cv_id"], client["usr_id"], hashPage)
+            if usr["number"] != "":
+                clients.append(usr)
 
+
+    # print(clients[100]["number"])
+    # print(clients[500]["number"])
+    # print(clients[1000]["number"])
     print("[+] \x1b[32m" + str(len(clients)) + "\x1b[0m ids collecteds!")
-    # @todo: and get numbers of ids
-    # get_number()
 
 
 # send messages to all users in the database
@@ -124,7 +133,6 @@ def send_messages():
 
 def main():
     get_clients()
-    # @info: should send messages from json database
     send_messages()
 
 
