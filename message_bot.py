@@ -1,8 +1,10 @@
 import re
 import json
+import time
 import dicts
 import requests
 from random import randrange
+from tqdm import tqdm
 
 # to simulate storage variables
 clients = []
@@ -66,9 +68,20 @@ def get_cookies():
     return res
 
 
+def get_ids(cookies, headers, page):
+    link = "https://www.catho.com.br/curriculos/busca/?q=vendas&pais_id=31&estado_id[25]=25&regiaoId[-1]=-1&cidade_id[783]=783&zona_id[-1]=-1&page="+ str(page) +"&onde_buscar=todo_curriculo&como_buscar=todas_palavras&tipoBusca=busca_palavra_chave&idade[1]=1&empregado=false&dataAtualizacao=30&buscaLogSentencePai=111e5bd0-8cee-4ed4-8ff3-51f9669f13f3"
+    response = requests.get(link, cookies=cookies, headers=headers, timeout=10)
+    filter = '<script id="__NEXT_DATA__" type="application/json">[^>]+'
+    frame = re.search(filter, response.text)
+    formated = frame.group(0).replace('<script id="__NEXT_DATA__" type="application/json">', '')
+    formated = formated.replace('</script', '')
+    return json.loads(formated)
+
+
 # Get number of current client id
-def get_number(id):
+def get_number():
     # @todo: create a function to requests numbers of current id
+    # zRLIikUDz3DyZs6Bje2om
     return id
 
 
@@ -76,17 +89,29 @@ def get_number(id):
 def get_clients():
     cookies = get_cookies()
     headers = get_headers()
-    link = "https://www.catho.com.br/curriculos/busca/?q=vendas&pais_id=31&estado_id[-1]=-1&regiaoId[-1]=-1&cidade_id[-1]=-1&zona_id[-1]=-1&page=1&onde_buscar=todo_curriculo&como_buscar=todas_palavras&tipoBusca=busca_palavra_chave&idade[1]=1&empregado=false&dataAtualizacao=30&buscaLogSentencePai=111e5bd0-8cee-4ed4-8ff3-51f9669f13f3"
-    response = requests.get(link, cookies=cookies, headers=headers)
-    filter = '<script id="__NEXT_DATA__" type="application/json">[^>]+'
-    frame = re.search(filter, response.text)
-    formated = frame.group(0).replace('<script id="__NEXT_DATA__" type="application/json">', '')
-    formated = formated.replace('</script', '')
-    data = json.loads(formated)
-    print(data)
-    # get_number("")
-    # @todo: this should get id of clients
+    print("\x1b[34m[󰀖] Getting clients ids!!!\x1b[0m")
+    for page in tqdm(range(1, 1000)):
+        time.sleep(2)
+        data = get_ids(cookies, headers, page)
+        try:
+            infos = data["props"]['pageProps']['resumeSearch']['resumeSearchResult']['resumes']
+        except:
+            # the loop should always be breaked
+            break
+
+        if len(infos) == 0:
+            break
+
+        # add cv_id && usr_id in memory
+        for client in infos:
+            usr = dicts.clients
+            usr["usr_id"] = client["usr_id"]
+            usr["cv_id"] = client["cv_id"]
+            clients.append(usr)
+
+    print("[+] \x1b[32m" + str(len(clients)) + "\x1b[0m ids collecteds!")
     # @todo: and get numbers of ids
+    # get_number()
 
 
 # send messages to all users in the database
