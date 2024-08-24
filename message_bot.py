@@ -1,3 +1,4 @@
+import re
 import json
 import dicts
 import requests
@@ -77,8 +78,12 @@ def get_clients():
     headers = get_headers()
     link = "https://www.catho.com.br/curriculos/busca/?q=vendas&pais_id=31&estado_id[-1]=-1&regiaoId[-1]=-1&cidade_id[-1]=-1&zona_id[-1]=-1&page=1&onde_buscar=todo_curriculo&como_buscar=todas_palavras&tipoBusca=busca_palavra_chave&idade[1]=1&empregado=false&dataAtualizacao=30&buscaLogSentencePai=111e5bd0-8cee-4ed4-8ff3-51f9669f13f3"
     response = requests.get(link, cookies=cookies, headers=headers)
-    print(response.status_code)
-    print(response.content)
+    filter = '<script id="__NEXT_DATA__" type="application/json">[^>]+'
+    frame = re.search(filter, response.text)
+    formated = frame.group(0).replace('<script id="__NEXT_DATA__" type="application/json">', '')
+    formated = formated.replace('</script', '')
+    data = json.loads(formated)
+    print(data)
     # get_number("")
     # @todo: this should get id of clients
     # @todo: and get numbers of ids
