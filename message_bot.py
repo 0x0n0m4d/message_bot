@@ -9,39 +9,10 @@ from tqdm import tqdm
 # to simulate storage variables
 clients = []
 
-# Delay in seconds to send message to client
-def random_delay():
-    return randrange(1, 20)
-
-
 # Add a tag to client number
 def add_tag(num):
     # @todo: create a function to add tags called 'Jhony' to numbers
     return num
-
-
-# get headers from request har file
-def get_headers():
-    # read HAR file
-    with open("request.har", "r") as file:
-        har_data = json.load(file)
-
-    # extract headers
-    har_headers = har_data["log"]["entries"][0]["request"]["headers"]
-
-    # get important headers
-    res = dicts.headers
-    for header in har_headers:
-        if header["name"] == "User-Agent":
-            res["User-Agent"] = header["value"]
-
-        if header["name"] == "Accept":
-            res["Accept"] = header["value"]
-
-    if res["User-Agent"] == "" or res["Accept"] == "":
-        raise NameError('Missing Important Headers!')
-
-    return res
 
 
 # get cookies from request har file
@@ -68,9 +39,9 @@ def get_cookies():
     return res
 
 
-def get_ids(cookies, headers, page):
-    link = "https://www.catho.com.br/curriculos/busca/?q=vendas&pais_id=31&estado_id[25]=25&regiaoId[-1]=-1&cidade_id[783]=783&zona_id[-1]=-1&page="+ str(page) +"&onde_buscar=todo_curriculo&como_buscar=todas_palavras&tipoBusca=busca_palavra_chave&idade[1]=1&empregado=false&dataAtualizacao=30&buscaLogSentencePai=111e5bd0-8cee-4ed4-8ff3-51f9669f13f3"
+def get_ids(link, cookies, headers):
     response = requests.get(link, cookies=cookies, headers=headers, timeout=10)
+    time.sleep(3)
     filter = '<script id="__NEXT_DATA__" type="application/json">[^>]+'
     frame = re.search(filter, response.text)
     formated = frame.group(0).replace('<script id="__NEXT_DATA__" type="application/json">', '')
@@ -79,47 +50,50 @@ def get_ids(cookies, headers, page):
 
 
 # Get number of current client id
-def get_number(cookies, headers, cv_id, usr_id, hash):
-    link = "https://www.catho.com.br/curriculos/api/resumes/"+ str(cv_id) +"/candidate/"+ str(usr_id) +"/phones/" + hash
-    response = requests.get(link, cookies=cookies, headers={"User-Agent": headers["User-Agent"], "Accept": "application/json, text/plain, */*"})
-    try:
-        usr_num = json.loads(response.text)["phones"][0]
-    except:
-        usr_num = ""
-
-    return usr_num
+def get_number(link, cv_id, usr_id, hash):
+    cookies = get_cookies()
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Referer": link,
+        "x-auth-token": cookies["cactk"]
+    }
+    link = "https://www.catho.com.br/curriculos/api/resumes/" + str(cv_id) + "/candidate/" + str(usr_id) + "/phones/" + hash
+    res = requests.get(link, cookies=cookies, headers=headers)
+    time.sleep(3)
+    return json.loads(res.text)["phones"][0]
 
 
 # search clients and save their numbers in a simple database
 def get_clients():
     cookies = get_cookies()
-    headers = get_headers()
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
+    }
     print("\x1b[34m[󰀖] Gathering clients data!!!\x1b[0m")
     for page in tqdm(range(1, 1000)):
-        data = get_ids(cookies, headers, page)
-        try:
-            infos = data["props"]['pageProps']['resumeSearch']['resumeSearchResult']['resumes']
-            hashPage = data["props"]['pageProps']["hashPage"]
-        except:
-            # the loop should always be breaked
-            break
+        link = "https://www.catho.com.br/curriculos/busca/?q=vendas&pais_id=31&estado_id[25]=25&regiaoId[-1]=-1&cidade_id[783]=783&zona_id[-1]=-1&page="+ str(page) +"&onde_buscar=todo_curriculo&como_buscar=todas_palavras&tipoBusca=busca_palavra_chave&idade[1]=1&empregado=false&dataAtualizacao=30&buscaLogSentencePai=111e5bd0-8cee-4ed4-8ff3-51f9669f13f3"
+        data = get_ids(link, cookies, headers)
+
+        infos = data["props"]['pageProps']['resumeSearch']['resumeSearchResult']['resumes']
+        hashPage = data["props"]['pageProps']["hashPage"]
 
         if len(infos) == 0:
             break
 
         # add cv_id && usr_id in memory
         for client in infos:
+            usr_id = client["usr_id"]
+            cv_id = client["cv_id"]
+            number = get_number(link, cv_id, usr_id, hashPage)
             usr = dicts.clients
-            usr["usr_id"] = client["usr_id"]
-            usr["cv_id"] = client["cv_id"]
-            usr["number"] = get_number(cookies, headers, client["cv_id"], client["usr_id"], hashPage)
-            if usr["number"] != "":
-                clients.append(usr)
+            usr["usr_id"] = usr_id
+            usr["cv_id"] = cv_id
+            clients.append(usr)
 
 
-    # print(clients[100]["number"])
-    # print(clients[500]["number"])
-    # print(clients[1000]["number"])
     print("[+] \x1b[32m" + str(len(clients)) + "\x1b[0m ids collecteds!")
 
 

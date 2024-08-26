@@ -8,6 +8,6 @@ Then, the bot will go through this database and will send delayed messages to ea
 - [x] Create the request that get possible ids of users;
 - [x] Gather only ids;
 - [x] The script needs go through all pages where users exists
-- [ ] Create the request that get numbers of users;
+- [x] Create the request that get numbers of users;
 - [ ] Create function to add tags to numbers
 - [ ] Create function to send messages to numbers

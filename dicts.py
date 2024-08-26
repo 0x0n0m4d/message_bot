@@ -10,9 +10,3 @@ cookies = {
     "session_id": "",
     "cactk": ""
 }
-
-# dict to store headers
-headers = {
-    "User-Agent": "",
-    "Accept": ""
-}
