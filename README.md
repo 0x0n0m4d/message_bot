@@ -46,5 +46,7 @@ python3 ./message_bot.py
 - [x] The script needs go through all pages where users exists
 - [x] Create the request that get numbers of users;
 - [x] Save collected numbers in json database
-- [ ] Create logic to prevent clients duplicates
 - [x] Create function to send messages to numbers
+- [ ] Create logic to prevent clients duplicates
+- [ ] Check if users in database already received the message
+- [ ] Add template image in template msg
