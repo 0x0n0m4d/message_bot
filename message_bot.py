@@ -8,10 +8,10 @@ from tqdm import tqdm
 import webbrowser as web
 from random import randrange
 
-
 def remove_junk():
     if os.path.exists("PyWhatKit_DB.txt"):
         os.remove("PyWhatKit_DB.txt")
+
 
 # get cookies from request har file
 def get_cookies():
@@ -112,7 +112,7 @@ def get_clients():
             break
 
 
-    print("[+] \x1b[32m" + str(len(clients)) + "\x1b[0m ids collecteds!")
+    print(" \x1b[32m[+] " + str(len(clients)) + " ids collecteds!\x1b[0m")
 
     # if `database.json` exist, the file will be overriden
     with open('database.json', 'w') as fout:
@@ -123,13 +123,16 @@ def get_clients():
 def send_message(num):
     f_message = open("template/text.txt", "r")
     message = f_message.read()
-    pywhatkit.sendwhatmsg_instantly(
-        num,
-        message,
-        30,
-        True,
-    )
-    return True
+    try:
+        pywhatkit.sendwhatmsg_instantly(
+            num,
+            message,
+            20,
+            True,
+        )
+        return True
+    except:
+        return False
 
 
 # handle messages to send text to all users in the database
@@ -142,6 +145,8 @@ def handle_messages():
         raise NameError('\x1b[31m ERROR:\x1b[0m Missing \x1b[34m\x1b[1mdatabase.json\x1b[0m file!')
 
     for client in data:
+        if client["number"] == "":
+            raise NameError('\x1b[31m ERROR:\x1b[0m Wrong Client Number!')
         # formatting and send message to numbers
         f_num = "+55"
         for l in client["number"]:
