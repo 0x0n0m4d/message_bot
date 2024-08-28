@@ -61,8 +61,12 @@ def get_number(link, cv_id, usr_id, hash):
     }
     link = "https://www.catho.com.br/curriculos/api/resumes/" + str(cv_id) + "/candidate/" + str(usr_id) + "/phones/" + hash
     res = requests.get(link, cookies=cookies, headers=headers)
-    time.sleep(3)
-    return json.loads(res.text)["phones"][0]
+    if res.text == "Too Many Requests":
+        time.sleep(3)
+        res2 = requests.get(link, cookies=cookies, headers=headers)
+        return json.loads(res2.text)["phones"][0]
+    else:
+        return json.loads(res.text)["phones"][0]
 
 
 # search clients and save their numbers in a simple database
@@ -72,8 +76,7 @@ def get_clients():
         "User-Agent": "Mozilla/5.0",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
     }
-    print("\x1b[34m[󰀖] Gathering clients data!!!\x1b[0m")
-    for page in tqdm(range(1, 1000)):
+    for page in range(1, 1000):
         link = "https://www.catho.com.br/curriculos/busca/?q=vendas&pais_id=31&estado_id[25]=25&regiaoId[-1]=-1&cidade_id[783]=783&zona_id[-1]=-1&page="+ str(page) +"&onde_buscar=todo_curriculo&como_buscar=todas_palavras&tipoBusca=busca_palavra_chave&idade[1]=1&empregado=false&dataAtualizacao=30&buscaLogSentencePai=111e5bd0-8cee-4ed4-8ff3-51f9669f13f3"
         data = get_ids(link, cookies, headers)
 
@@ -83,8 +86,9 @@ def get_clients():
         if len(infos) == 0:
             break
 
+        print(f'\x1b[34m[󰀖]\x1b[0m Gathering clients data in page \x1b[1m{page}\x1b[0m!!!')
         # add cv_id && usr_id in memory
-        for client in infos:
+        for client in tqdm(infos, desc="[\x1b[32m"+str(page)+"\x1b[0m]"):
             usr_id = client["usr_id"]
             cv_id = client["cv_id"]
             number = get_number(link, cv_id, usr_id, hashPage)
