@@ -7,6 +7,18 @@ Não é totalmente necessário, mas assim você evita de baixar bibliotecas inut
 python3 -m venv venv
 ```
 
+Se conecte no ambiente virtual criado
+No Powershell:
+```powershell
+$profile_content = [string]::join([environment]::newline,(get-content venv/bin/activate.ps1))
+invoke-expression $profile_content
+```
+
+No Linux/WSL:
+```bash
+source venv/bin/activate.csh
+```
+
 Baixe as bibliotecas que são utilizadas pelo bot com o seguinte comando:
 
 ```fish
