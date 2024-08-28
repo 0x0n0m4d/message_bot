@@ -6,3 +6,6 @@ request.har
 
 # ignore cache
 __pycache__/
+
+# ignore database
+database.json
