@@ -97,6 +97,9 @@ def get_clients():
             usr["cv_id"] = cv_id
             clients.append(usr)
 
+        if len(clients) >= 200:
+            break
+
 
     print("[+] \x1b[32m" + str(len(clients)) + "\x1b[0m ids collecteds!")
 
