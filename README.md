@@ -10,7 +10,7 @@ python3 -m venv venv
 Se conecte no ambiente virtual criado
 No Powershell:
 ```powershell
-$profile_content = [string]::join([environment]::newline,(get-content venv/bin/activate.ps1))
+$profile_content = [string]::join([environment]::newline,(get-content venv/bin/Activate.ps1))
 invoke-expression $profile_content
 ```
 
