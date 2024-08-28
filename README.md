@@ -1,6 +1,7 @@
 # Bot De Mensagens
 ## Setup
 Clone esse repositório e rode um ambiente virtual.
+
 Não é totalmente necessário, mas assim você evita de baixar bibliotecas inuteis:
 
 ```fish
@@ -8,6 +9,7 @@ python3 -m venv venv
 ```
 
 Se conecte no ambiente virtual criado
+
 No Powershell:
 ```powershell
 $profile_content = [string]::join([environment]::newline,(get-content venv/bin/Activate.ps1))
