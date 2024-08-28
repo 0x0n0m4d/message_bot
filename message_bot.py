@@ -1,7 +1,6 @@
 import re
 import json
 import time
-import dicts
 import requests
 from random import randrange
 from tqdm import tqdm
@@ -25,16 +24,22 @@ def get_cookies():
     har_cookies = har_data["log"]["entries"][0]["request"]["cookies"]
 
     # get important cookies
-    res = dicts.cookies
+    res = {
+        "session_id": "",
+        "cactk": ""
+    }
     for cookie in har_cookies:
         if cookie["name"] == "session_id":
-            res["session_id"] = cookie["value"]
+            if cookie["value"] == "":
+                raise NameError('Missing Important Cookies!')
+            else:
+                res["session_id"] = cookie["value"]
 
         if cookie["name"] == "cactk":
-            res["cactk"] = cookie["value"]
-
-    if res["session_id"] == "" or res["cactk"] == "":
-        raise NameError('Missing Important Cookies!')
+            if cookie["value"] == "":
+                raise NameError('Missing Important Cookies!')
+            else:
+                res["cactk"] = cookie["value"]
 
     return res
 
@@ -92,16 +97,19 @@ def get_clients():
             usr_id = client["usr_id"]
             cv_id = client["cv_id"]
             number = get_number(link, cv_id, usr_id, hashPage)
-            usr = dicts.clients
-            usr["usr_id"] = usr_id
-            usr["cv_id"] = cv_id
-            clients.append(usr)
+            clients.append({
+                "usr_id": usr_id,
+                "cv_id": cv_id,
+                "number": number
+            })
 
         if len(clients) >= 200:
             break
 
 
     print("[+] \x1b[32m" + str(len(clients)) + "\x1b[0m ids collecteds!")
+    with open('database.json', 'w') as fout:
+        json.dump(clients, fout)
 
 
 # send messages to all users in the database

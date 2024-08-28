@@ -9,7 +9,7 @@ Then, the bot will go through this database and will send delayed messages to ea
 - [x] Gather only ids;
 - [x] The script needs go through all pages where users exists
 - [x] Create the request that get numbers of users;
-- [ ] Save collected numbers in json database
+- [x] Save collected numbers in json database
 - [ ] Create logic to prevent clients duplicates
 - [ ] Create function to add tags to numbers
 - [ ] Create function to send messages to numbers
