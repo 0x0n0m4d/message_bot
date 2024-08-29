@@ -10,6 +10,7 @@ from tqdm import tqdm
 from random import randrange
 from operator import itemgetter
 
+# remove unnecessary file
 def remove_junk():
     if os.path.exists("PyWhatKit_DB.txt"):
         os.remove("PyWhatKit_DB.txt")
@@ -21,10 +22,10 @@ def remove_dupl_and_sort(data):
         with open("database.json", "r") as f:
             s_data = json.load(f)
 
-        for item in s_data:
-            data.append(item)
+        for item in data:
+            s_data.append(item)
 
-        sorted_data = sorted(data, key=itemgetter('number'))
+        sorted_data = sorted(s_data, key=itemgetter('number'))
         r_dupl = [next(g) for k,g in itertools.groupby(sorted_data, lambda x: x['number'])]
         return sorted(r_dupl, key=itemgetter('alreadySend'))
     else:
@@ -133,7 +134,7 @@ def get_clients():
             f_clients = remove_dupl_and_sort(clients)
             # save all clients
             with open('database.json', 'w') as fout:
-                json.dump(clients, fout)
+                json.dump(f_clients, fout)
 
             clients = []
             counter = 0
@@ -150,6 +151,7 @@ def get_clients():
                 break
 
     print(" \x1b[32m[+] " + str(len(clients)) + " ids collecteds!\x1b[0m")
+    print(" \x1b[32m database has been updated!\x1b[0m")
 
 
 # Add a tag to client number
@@ -178,6 +180,7 @@ def handle_messages():
         raise NameError('\x1b[31m ERROR:\x1b[0m Missing \x1b[34m\x1b[1mdatabase.json\x1b[0m file!')
 
     print(f'\x1b[32m\x1b[0m Sending message to numbers:')
+    msg_send = 0
     for client in tqdm(data):
         if client["number"] == "":
             raise NameError('\x1b[31m ERROR:\x1b[0m Wrong Client Number!')
@@ -192,12 +195,23 @@ def handle_messages():
             else:
                 f_num = f_num + l
 
-        time.sleep(3)
-        send_message(f_num)
+        if client["alreadySend"] == False:
+            time.sleep(3)
+            send_message(f_num)
+            client["alreadySend"] = True
+            msg_send += 1
+        else:
+            break
+
+    with open('database.json', 'w') as fout:
+        json.dump(data, fout)
+
+    print(" \x1b[32m database has been updated!\x1b[0m")
+    print(f'\x1b[32m\x1b[0m {msg_send} messages have been sent without errors!')
 
 
 def main():
-    # get_clients()
+    get_clients()
     handle_messages()
     remove_junk()
 
