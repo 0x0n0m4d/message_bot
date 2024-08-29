@@ -39,6 +39,8 @@ Após salvar o arquivo na mesma pasta que `message_bot.py`, o código pode ser e
 python3 ./message_bot.py
 ```
 
+**_Não remova o arquivo `database.json` criado_**
+
 ## TODO
 - [x] Create a simple number randomizer;
 - [x] Create the request that get possible ids of users;
