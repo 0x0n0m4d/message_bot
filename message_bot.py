@@ -4,13 +4,33 @@ import json
 import time
 import requests
 import pywhatkit
-from tqdm import tqdm
+import itertools
 import webbrowser as web
+from tqdm import tqdm
 from random import randrange
+from operator import itemgetter
 
 def remove_junk():
     if os.path.exists("PyWhatKit_DB.txt"):
         os.remove("PyWhatKit_DB.txt")
+
+
+# get list with clients numbers, remove duplicates & sort with pending messages to send
+def remove_dupl_and_sort(data):
+    if os.path.exists("database.json"):
+        with open("database.json", "r") as f:
+            s_data = json.load(f)
+
+        for item in s_data:
+            data.append(item)
+
+        sorted_data = sorted(data, key=itemgetter('number'))
+        r_dupl = [next(g) for k,g in itertools.groupby(sorted_data, lambda x: x['number'])]
+        return sorted(r_dupl, key=itemgetter('alreadySend'))
+    else:
+        sorted_data = sorted(data, key=itemgetter('number'))
+        r_dupl = [next(g) for k,g in itertools.groupby(sorted_data, lambda x: x['number'])]
+        return sorted(r_dupl, key=itemgetter('alreadySend'))
 
 
 # get cookies from request har file
@@ -105,18 +125,31 @@ def get_clients():
             clients.append({
                 "usr_id": usr_id,
                 "cv_id": cv_id,
-                "number": number
+                "number": number,
+                "alreadySend": False
             })
 
         if len(clients) >= 200:
-            break
+            f_clients = remove_dupl_and_sort(clients)
+            # save all clients
+            with open('database.json', 'w') as fout:
+                json.dump(clients, fout)
 
+            clients = []
+            counter = 0
+            for c in f_clients:
+                if c["alreadySend"] == False:
+                    clients.append(c)
+                    counter += 1
+                else:
+                    break
+
+            if counter < 200:
+                continue
+            else:
+                break
 
     print(" \x1b[32m[+] " + str(len(clients)) + " ids collecteds!\x1b[0m")
-
-    # if `database.json` exist, the file will be overriden
-    with open('database.json', 'w') as fout:
-        json.dump(clients, fout)
 
 
 # Add a tag to client number
