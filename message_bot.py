@@ -127,12 +127,12 @@ def send_message(num):
         pywhatkit.sendwhatmsg_instantly(
             num,
             message,
-            20,
+            15,
             True,
+            2
         )
-        return True
     except:
-        return False
+        raise NameError('\x1b[31m ERROR:\x1b[0m Something wrong when tryed to send message!')
 
 
 # handle messages to send text to all users in the database
@@ -144,7 +144,8 @@ def handle_messages():
     except:
         raise NameError('\x1b[31m ERROR:\x1b[0m Missing \x1b[34m\x1b[1mdatabase.json\x1b[0m file!')
 
-    for client in data:
+    print(f'\x1b[32m\x1b[0m Sending message to numbers:')
+    for client in tqdm(data):
         if client["number"] == "":
             raise NameError('\x1b[31m ERROR:\x1b[0m Wrong Client Number!')
         # formatting and send message to numbers
@@ -158,16 +159,12 @@ def handle_messages():
             else:
                 f_num = f_num + l
 
-        if send_message(f_num):
-            counter += 1
-        else:
-            continue
-
-        break
+        time.sleep(3)
+        send_message(f_num)
 
 
 def main():
-    get_clients()
+    # get_clients()
     handle_messages()
     remove_junk()
 
