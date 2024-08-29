@@ -48,5 +48,4 @@ python3 ./message_bot.py
 - [x] Save collected numbers in json database
 - [x] Create function to send messages to numbers
 - [ ] Create logic to prevent clients duplicates
-- [ ] Check if users in database already received the message
 - [ ] Add template image in template msg
