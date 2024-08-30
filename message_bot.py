@@ -3,8 +3,9 @@ import re
 import json
 import time
 import requests
-import pywhatkit
 import itertools
+import pyperclip as pc
+import pyautogui as pg
 import webbrowser as web
 from tqdm import tqdm
 from random import randrange
@@ -159,13 +160,13 @@ def send_message(num):
     f_message = open("template/text.txt", "r")
     message = f_message.read()
     try:
-        pywhatkit.sendwhatmsg_instantly(
-            num,
-            message,
-            15,
-            True,
-            2
-        )
+        pc.copy(f"https://web.whatsapp.com/send?phone={num}&text={message}")
+        pg.hotkey('ctrl', 'l')
+        pg.hotkey('ctrl', 'v')
+        pg.press('enter')
+        time.sleep(15)
+        pg.press('enter')
+        time.sleep(5)
     except:
         raise NameError('\x1b[31m ERROR:\x1b[0m Something wrong when tryed to send message!')
 
@@ -182,6 +183,9 @@ def handle_messages():
     print(f'\x1b[32m\x1b[0m Sending message to numbers:')
     print(" \x1b[32m the database will be updated with each message sent!\x1b[0m")
     msg_send = 0
+    print(" \x1b[32m󰖟\x1b[0m Loading site!")
+    web.open("https://web.whatsapp.com/")
+    time.sleep(15)
     for client in tqdm(data):
         if client["number"] == "":
             raise NameError('\x1b[31m ERROR:\x1b[0m Wrong Client Number!')
@@ -197,7 +201,6 @@ def handle_messages():
                 f_num = f_num + l
 
         if client["alreadySend"] == False:
-            time.sleep(3)
             send_message(f_num)
             client["alreadySend"] = True
             msg_send += 1
@@ -210,7 +213,7 @@ def handle_messages():
 
 
 def main():
-    get_clients()
+    # get_clients()
     handle_messages()
     remove_junk()
 
