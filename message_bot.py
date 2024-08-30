@@ -180,6 +180,7 @@ def handle_messages():
         raise NameError('\x1b[31m ERROR:\x1b[0m Missing \x1b[34m\x1b[1mdatabase.json\x1b[0m file!')
 
     print(f'\x1b[32m\x1b[0m Sending message to numbers:')
+    print(" \x1b[32m the database will be updated with each message sent!\x1b[0m")
     msg_send = 0
     for client in tqdm(data):
         if client["number"] == "":
@@ -200,13 +201,11 @@ def handle_messages():
             send_message(f_num)
             client["alreadySend"] = True
             msg_send += 1
+            with open('database.json', 'w') as fout:
+                json.dump(data, fout)
         else:
             break
 
-    with open('database.json', 'w') as fout:
-        json.dump(data, fout)
-
-    print(" \x1b[32m database has been updated!\x1b[0m")
     print(f'\x1b[32m\x1b[0m {msg_send} messages have been sent without errors!')
 
 
