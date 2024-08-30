@@ -213,7 +213,7 @@ def handle_messages():
 
 
 def main():
-    # get_clients()
+    get_clients()
     handle_messages()
     remove_junk()
 
