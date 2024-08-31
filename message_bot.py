@@ -151,8 +151,8 @@ def get_clients():
             else:
                 break
 
-    print(" \x1b[32m[+] " + str(len(clients)) + " ids collecteds!\x1b[0m")
-    print(" \x1b[32m database has been updated!\x1b[0m")
+    print("\x1b[32m[+] " + str(len(clients)) + " ids collecteds!\x1b[0m")
+    print("\x1b[32m database has been updated!\x1b[0m")
 
 
 # Add a tag to client number
@@ -181,9 +181,9 @@ def handle_messages():
         raise NameError('\x1b[31m ERROR:\x1b[0m Missing \x1b[34m\x1b[1mdatabase.json\x1b[0m file!')
 
     print(f'\x1b[32m\x1b[0m Sending message to numbers:')
-    print(" \x1b[32m the database will be updated with each message sent!\x1b[0m")
+    print("\x1b[32m the database will be updated with each message sent!\x1b[0m")
     msg_send = 0
-    print(" \x1b[32m󰖟\x1b[0m Loading site!")
+    print("\x1b[32m󰖟\x1b[0m Loading site!")
     web.open("https://web.whatsapp.com/")
     time.sleep(15)
     for client in tqdm(data):
@@ -213,9 +213,19 @@ def handle_messages():
 
 
 def main():
-    get_clients()
-    handle_messages()
-    remove_junk()
+    f_logo = open("template/logo.txt", "r")
+    logo = f_logo.read()
+    print(logo)
+    choice = int(input("Selecione uma opção: (1 ou 2)  "))
+    if choice == 1:
+        get_clients()
+        handle_messages()
+        remove_junk()
+    elif choice == 2:
+        handle_messages()
+        remove_junk()
+    else:
+        raise NameError('\x1b[31m ERROR:\x1b[0m Wrong Option in Menu!')
 
 
 if __name__ == "__main__":
