@@ -12,8 +12,7 @@ Se conecte no ambiente virtual criado
 
 No Powershell:
 ```powershell
-$profile_content = [string]::join([environment]::newline,(get-content venv/bin/Activate.ps1))
-invoke-expression $profile_content
+.\venv\Scripts\Activate.ps1
 ```
 
 No Linux/WSL:
