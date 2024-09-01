@@ -20,7 +20,7 @@ def remove_junk():
 # get list with clients numbers, remove duplicates & sort with pending messages to send
 def remove_dupl_and_sort(data):
     if os.path.exists("database.json"):
-        with open("database.json", "r") as f:
+        with open("database.json", mode="r", encoding="utf8") as f:
             s_data = json.load(f)
 
         for item in data:
@@ -39,7 +39,7 @@ def remove_dupl_and_sort(data):
 def get_cookies():
     # read HAR file
     try:
-        with open("request.har", "r") as file:
+        with open("request.har", mode="r", encoding="utf8") as file:
             har_data = json.load(file)
     except:
         raise NameError('\x1b[31m ERROR:\x1b[0m Missing \x1b[34m\x1b[1mrequest.har\x1b[0m file!')
@@ -134,7 +134,7 @@ def get_clients():
         if len(clients) >= 200:
             f_clients = remove_dupl_and_sort(clients)
             # save all clients
-            with open('database.json', 'w') as fout:
+            with open('database.json', mode='w', encoding="utf8") as fout:
                 json.dump(f_clients, fout)
 
             clients = []
@@ -157,7 +157,7 @@ def get_clients():
 
 # Add a tag to client number
 def send_message(num):
-    f_message = open("template/text.txt", "r")
+    f_message = open("template/text.txt", mode="r", encoding="utf8")
     message = f_message.read()
     try:
         pc.copy(f"https://web.whatsapp.com/send?phone={num}&text={message}")
@@ -175,7 +175,7 @@ def send_message(num):
 def handle_messages():
     # check if database exists
     try:
-        with open("database.json", "r") as f:
+        with open("database.json", mode="r", encoding="utf8") as f:
             data = json.load(f)
     except:
         raise NameError('\x1b[31m ERROR:\x1b[0m Missing \x1b[34m\x1b[1mdatabase.json\x1b[0m file!')
@@ -204,7 +204,7 @@ def handle_messages():
             send_message(f_num)
             client["alreadySend"] = True
             msg_send += 1
-            with open('database.json', 'w') as fout:
+            with open('database.json', mode='w', encoding="utf8") as fout:
                 json.dump(data, fout)
         else:
             break
@@ -213,7 +213,7 @@ def handle_messages():
 
 
 def main():
-    f_logo = open("template/logo.txt", "r")
+    f_logo = open("template/logo.txt", mode="r", encoding="utf8")
     logo = f_logo.read()
     print(logo)
     choice = int(input("Selecione uma opção: (1 ou 2)  "))
