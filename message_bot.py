@@ -163,6 +163,7 @@ def send_message(num):
         pc.copy(f"https://web.whatsapp.com/send?phone={num}&text={message}")
         pg.hotkey('ctrl', 'l')
         pg.hotkey('ctrl', 'v')
+        time.sleep(1)
         pg.press('enter')
         time.sleep(15)
         pg.press('enter')
