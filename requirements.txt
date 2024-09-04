@@ -1,1 +1,4 @@
-tqdm~=4.66.5
+tqdm
+request
+pyautogui
+pyperclip
