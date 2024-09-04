@@ -34,6 +34,12 @@ def remove_dupl_and_sort(data):
         r_dupl = [next(g) for k,g in itertools.groupby(sorted_data, lambda x: x['number'])]
         return sorted(r_dupl, key=itemgetter('alreadySend'))
 
+def sort_data(data):
+    sorted_data = sorted(data, key=itemgetter('number'))
+    r_dupl = [next(g) for k,g in itertools.groupby(sorted_data, lambda x: x['number'])]
+    return sorted(r_dupl, key=itemgetter('alreadySend'))
+
+
 
 # get cookies from request har file
 def get_cookies():
@@ -181,13 +187,15 @@ def handle_messages():
     except:
         raise NameError('\x1b[31m ERROR:\x1b[0m Missing \x1b[34m\x1b[1mdatabase.json\x1b[0m file!')
 
+    s_data = sort_data(data)
+
     print(f'\x1b[32m\x1b[0m Sending message to numbers:')
     print("\x1b[32m the database will be updated with each message sent!\x1b[0m")
     msg_send = 0
     print("\x1b[32m󰖟\x1b[0m Loading site!")
     web.open("https://web.whatsapp.com/")
     time.sleep(15)
-    for client in tqdm(data):
+    for client in tqdm(s_data):
         if client["number"] == "":
             raise NameError('\x1b[31m ERROR:\x1b[0m Wrong Client Number!')
         # formatting and send message to numbers
@@ -206,7 +214,7 @@ def handle_messages():
             client["alreadySend"] = True
             msg_send += 1
             with open('database.json', mode='w', encoding="utf8") as fout:
-                json.dump(data, fout)
+                json.dump(s_data, fout)
         else:
             break
 
