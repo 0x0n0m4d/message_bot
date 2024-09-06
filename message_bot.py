@@ -76,13 +76,25 @@ def get_cookies():
 
 # Get ids in api to search numbers
 def get_ids(link, cookies, headers):
-    response = requests.get(link, cookies=cookies, headers=headers, timeout=10)
     time.sleep(3)
+    response = requests.get(link, cookies=cookies, headers=headers, timeout=10)
     filter = '<script id="__NEXT_DATA__" type="application/json">[^>]+'
     frame = re.search(filter, response.text)
     formated = frame.group(0).replace('<script id="__NEXT_DATA__" type="application/json">', '')
     formated = formated.replace('</script', '')
-    return json.loads(formated)
+    data = json.loads(formated)
+    try:
+        hashPage = data["props"]['pageProps']["hashPage"]
+        return data
+    except:
+        time.sleep(3)
+        response = requests.get(link, cookies=cookies, headers=headers, timeout=10)
+        filter = '<script id="__NEXT_DATA__" type="application/json">[^>]+'
+        frame = re.search(filter, response.text)
+        formated = frame.group(0).replace('<script id="__NEXT_DATA__" type="application/json">', '')
+        formated = formated.replace('</script', '')
+        data = json.loads(formated)
+        return data
 
 
 # Get number of current client id
@@ -119,8 +131,11 @@ def get_clients():
         link = "https://www.catho.com.br/curriculos/busca/?q=vendas&pais_id=31&estado_id[25]=25&regiaoId[-1]=-1&cidade_id[783]=783&zona_id[-1]=-1&page="+ str(page) +"&onde_buscar=todo_curriculo&como_buscar=todas_palavras&tipoBusca=busca_palavra_chave&idade[1]=1&empregado=false&dataAtualizacao=30&buscaLogSentencePai=111e5bd0-8cee-4ed4-8ff3-51f9669f13f3"
         data = get_ids(link, cookies, headers)
 
-        infos = data["props"]['pageProps']['resumeSearch']['resumeSearchResult']['resumes']
-        hashPage = data["props"]['pageProps']["hashPage"]
+        try:
+            infos = data["props"]['pageProps']['resumeSearch']['resumeSearchResult']['resumes']
+            hashPage = data["props"]['pageProps']["hashPage"]
+        except:
+            raise NameError('\x1b[31m ERROR:\x1b[0m Data not found!')
 
         if len(infos) == 0:
             break
