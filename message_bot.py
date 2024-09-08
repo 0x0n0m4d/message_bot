@@ -88,13 +88,7 @@ def get_ids(link, cookies, headers):
         return data
     except:
         time.sleep(3)
-        response = requests.get(link, cookies=cookies, headers=headers, timeout=10)
-        filter = '<script id="__NEXT_DATA__" type="application/json">[^>]+'
-        frame = re.search(filter, response.text)
-        formated = frame.group(0).replace('<script id="__NEXT_DATA__" type="application/json">', '')
-        formated = formated.replace('</script', '')
-        data = json.loads(formated)
-        return data
+        return get_ids(link, cookies, headers)
 
 
 # Get number of current client id
@@ -111,8 +105,7 @@ def get_number(link, cv_id, usr_id, hash):
     res = requests.get(link, cookies=cookies, headers=headers)
     if res.text == "Too Many Requests":
         time.sleep(3)
-        res2 = requests.get(link, cookies=cookies, headers=headers)
-        return json.loads(res2.text)["phones"][0]
+        return get_number(link, cv_id, usr_id, hash)
     else:
         return json.loads(res.text)["phones"][0]
 
