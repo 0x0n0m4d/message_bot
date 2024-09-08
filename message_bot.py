@@ -87,7 +87,7 @@ def get_ids(link, cookies, headers):
         hashPage = data["props"]['pageProps']["hashPage"]
         return data
     except:
-        time.sleep(3)
+        time.sleep(4)
         return get_ids(link, cookies, headers)
 
 
@@ -104,7 +104,7 @@ def get_number(link, cv_id, usr_id, hash):
     link = "https://www.catho.com.br/curriculos/api/resumes/" + str(cv_id) + "/candidate/" + str(usr_id) + "/phones/" + hash
     res = requests.get(link, cookies=cookies, headers=headers)
     if res.text == "Too Many Requests":
-        time.sleep(3)
+        time.sleep(4)
         return get_number(link, cv_id, usr_id, hash)
     else:
         return json.loads(res.text)["phones"][0]
