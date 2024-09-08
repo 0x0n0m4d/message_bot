@@ -156,19 +156,7 @@ def get_clients():
             with open('database.json', mode='w', encoding="utf8") as fout:
                 json.dump(f_clients, fout)
 
-            clients = []
-            counter = 0
-            for c in f_clients:
-                if c["alreadySend"] == False:
-                    clients.append(c)
-                    counter += 1
-                else:
-                    break
-
-            if counter < 200:
-                continue
-            else:
-                break
+            break
 
     print("\x1b[32m[+] " + str(len(clients)) + " ids collecteds!\x1b[0m")
     print("\x1b[32m database has been updated!\x1b[0m")
