@@ -244,9 +244,11 @@ def main():
     choice = int(input("Selecione uma opção: (1 ou 2)  "))
     if choice == 1:
         get_clients()
+    elif choice == 2:
+        get_clients()
         handle_messages()
         remove_junk()
-    elif choice == 2:
+    elif choice == 3:
         handle_messages()
         remove_junk()
     else:
