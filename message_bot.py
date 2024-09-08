@@ -241,7 +241,7 @@ def main():
     f_logo = open("template/logo.txt", mode="r", encoding="utf8")
     logo = f_logo.read()
     print(logo)
-    choice = int(input("Selecione uma opção: (1 ou 2)  "))
+    choice = int(input("Selecione uma opção: (1, 2 ou 3)  "))
     if choice == 1:
         get_clients()
     elif choice == 2:
