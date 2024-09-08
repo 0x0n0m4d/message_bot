@@ -107,7 +107,10 @@ def get_number(link, cv_id, usr_id, hash):
         time.sleep(4)
         return get_number(link, cv_id, usr_id, hash)
     else:
-        return json.loads(res.text)["phones"][0]
+        try:
+            return json.loads(res.text)["phones"][0]
+        except TypeError:
+            return "0"
 
 
 # search clients and save their numbers in a simple database
@@ -139,12 +142,13 @@ def get_clients():
             usr_id = client["usr_id"]
             cv_id = client["cv_id"]
             number = get_number(link, cv_id, usr_id, hashPage)
-            clients.append({
-                "usr_id": usr_id,
-                "cv_id": cv_id,
-                "number": number,
-                "alreadySend": False
-            })
+            if number != "0":
+                clients.append({
+                    "usr_id": usr_id,
+                    "cv_id": cv_id,
+                    "number": number,
+                    "alreadySend": False
+                })
 
         if len(clients) >= 200:
             f_clients = remove_dupl_and_sort(clients)
