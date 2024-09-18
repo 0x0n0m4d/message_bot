@@ -8,10 +8,11 @@ import pyperclip as pc
 import pyautogui as pg
 import webbrowser as web
 from tqdm import tqdm
-from random import randrange
 from operator import itemgetter
 
 # remove unnecessary file
+
+
 def remove_junk():
     if os.path.exists("PyWhatKit_DB.txt"):
         os.remove("PyWhatKit_DB.txt")
@@ -27,18 +28,21 @@ def remove_dupl_and_sort(data):
             s_data.append(item)
 
         sorted_data = sorted(s_data, key=itemgetter('number'))
-        r_dupl = [next(g) for k,g in itertools.groupby(sorted_data, lambda x: x['number'])]
+        r_dupl = [next(g) for k, g in itertools.groupby(
+            sorted_data, lambda x: x['number'])]
         return sorted(r_dupl, key=itemgetter('alreadySend'))
     else:
         sorted_data = sorted(data, key=itemgetter('number'))
-        r_dupl = [next(g) for k,g in itertools.groupby(sorted_data, lambda x: x['number'])]
+        r_dupl = [next(g) for k, g in itertools.groupby(
+            sorted_data, lambda x: x['number'])]
         return sorted(r_dupl, key=itemgetter('alreadySend'))
+
 
 def sort_data(data):
     sorted_data = sorted(data, key=itemgetter('number'))
-    r_dupl = [next(g) for k,g in itertools.groupby(sorted_data, lambda x: x['number'])]
+    r_dupl = [next(g) for k, g in itertools.groupby(
+        sorted_data, lambda x: x['number'])]
     return sorted(r_dupl, key=itemgetter('alreadySend'))
-
 
 
 # get cookies from request har file
@@ -48,7 +52,8 @@ def get_cookies():
         with open("request.har", mode="r", encoding="utf8") as file:
             har_data = json.load(file)
     except:
-        raise NameError('\x1b[31m ERROR:\x1b[0m Missing \x1b[34m\x1b[1mrequest.har\x1b[0m file!')
+        raise NameError(
+            '\x1b[31m ERROR:\x1b[0m Missing \x1b[34m\x1b[1mrequest.har\x1b[0m file!')
 
     # extract cookies
     har_cookies = har_data["log"]["entries"][0]["request"]["cookies"]
@@ -61,13 +66,15 @@ def get_cookies():
     for cookie in har_cookies:
         if cookie["name"] == "session_id":
             if cookie["value"] == "":
-                raise NameError('\x1b[31m ERROR:\x1b[0m Missing Important Cookies In File!')
+                raise NameError(
+                    '\x1b[31m ERROR:\x1b[0m Missing Important Cookies In File!')
             else:
                 res["session_id"] = cookie["value"]
 
         if cookie["name"] == "cactk":
             if cookie["value"] == "":
-                raise NameError('\x1b[31m ERROR:\x1b[0m Missing Important Cookies In File!')
+                raise NameError(
+                    '\x1b[31m ERROR:\x1b[0m Missing Important Cookies In File!')
             else:
                 res["cactk"] = cookie["value"]
 
@@ -77,10 +84,11 @@ def get_cookies():
 # Get ids in api to search numbers
 def get_ids(link, cookies, headers):
     time.sleep(3)
-    response = requests.get(link, cookies=cookies, headers=headers, timeout=10)
+    response = requests.get(link, cookies=cookies, headers=headers, timeout=20)
     filter = '<script id="__NEXT_DATA__" type="application/json">[^>]+'
     frame = re.search(filter, response.text)
-    formated = frame.group(0).replace('<script id="__NEXT_DATA__" type="application/json">', '')
+    formated = frame.group(0).replace(
+        '<script id="__NEXT_DATA__" type="application/json">', '')
     formated = formated.replace('</script', '')
     data = json.loads(formated)
     try:
@@ -101,8 +109,9 @@ def get_number(link, cv_id, usr_id, hash):
         "Referer": link,
         "x-auth-token": cookies["cactk"]
     }
-    link = "https://www.catho.com.br/curriculos/api/resumes/" + str(cv_id) + "/candidate/" + str(usr_id) + "/phones/" + hash
-    res = requests.get(link, cookies=cookies, headers=headers)
+    link = "https://www.catho.com.br/curriculos/api/resumes/" + \
+        str(cv_id) + "/candidate/" + str(usr_id) + "/phones/" + hash
+    res = requests.get(link, cookies=cookies, headers=headers, timeout=20)
     if res.text == "Too Many Requests":
         time.sleep(4)
         return get_number(link, cv_id, usr_id, hash)
@@ -110,6 +119,8 @@ def get_number(link, cv_id, usr_id, hash):
         try:
             return json.loads(res.text)["phones"][0]
         except TypeError:
+            return "0"
+        except json.decoder.JSONDecodeError:
             return "0"
 
 
@@ -124,7 +135,8 @@ def get_clients():
     clients = []
 
     for page in range(1, 1000):
-        link = "https://www.catho.com.br/curriculos/busca/?q=vendas&pais_id=31&estado_id[25]=25&regiaoId[-1]=-1&cidade_id[783]=783&zona_id[-1]=-1&page="+ str(page) +"&onde_buscar=todo_curriculo&como_buscar=todas_palavras&tipoBusca=busca_palavra_chave&idade[1]=1&empregado=false&dataAtualizacao=30&buscaLogSentencePai=111e5bd0-8cee-4ed4-8ff3-51f9669f13f3"
+        link = "https://www.catho.com.br/curriculos/busca/?q=vendas&pais_id=31&estado_id[25]=25&regiaoId[-1]=-1&cidade_id[783]=783&zona_id[-1]=-1&page=" + str(
+            page) + "&onde_buscar=todo_curriculo&como_buscar=todas_palavras&tipoBusca=busca_palavra_chave&idade[1]=1&empregado=false&dataAtualizacao=30&buscaLogSentencePai=111e5bd0-8cee-4ed4-8ff3-51f9669f13f3"
         data = get_ids(link, cookies, headers)
 
         try:
@@ -176,7 +188,8 @@ def send_message(num):
         pg.press('enter')
         time.sleep(5)
     except:
-        raise NameError('\x1b[31m ERROR:\x1b[0m Something wrong when tryed to send message!')
+        raise NameError(
+            '\x1b[31m ERROR:\x1b[0m Something wrong when tryed to send message!')
 
 
 # handle messages to send text to all users in the database
@@ -186,7 +199,8 @@ def handle_messages():
         with open("database.json", mode="r", encoding="utf8") as f:
             data = json.load(f)
     except:
-        raise NameError('\x1b[31m ERROR:\x1b[0m Missing \x1b[34m\x1b[1mdatabase.json\x1b[0m file!')
+        raise NameError(
+            '\x1b[31m ERROR:\x1b[0m Missing \x1b[34m\x1b[1mdatabase.json\x1b[0m file!')
 
     s_data = sort_data(data)
 
@@ -219,7 +233,8 @@ def handle_messages():
         else:
             break
 
-    print(f'\x1b[32m\x1b[0m {msg_send} messages have been sent without errors!')
+    print(
+        f'\x1b[32m\x1b[0m {msg_send} messages have been sent without errors!')
 
 
 def main():
