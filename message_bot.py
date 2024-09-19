@@ -18,7 +18,8 @@ def remove_junk():
         os.remove("PyWhatKit_DB.txt")
 
 
-# get list with clients numbers, remove duplicates & sort with pending messages to send
+# get list with clients numbers, remove duplicates
+# & sort with pending messages to send
 def remove_dupl_and_sort(data):
     if os.path.exists("database.json"):
         with open("database.json", mode="r", encoding="utf8") as f:
@@ -148,7 +149,7 @@ def get_clients():
         if len(infos) == 0:
             break
 
-        print(f'\x1b[34m\x1b[0m Gathering clients data in page:')
+        print('\x1b[34m\x1b[0m Gathering clients data in page:')
 
         for client in tqdm(infos, desc="\x1b[32m\x1b[1m"+str(page)+"\x1b[0m 󰁕"):
             usr_id = client["usr_id"]
@@ -204,7 +205,7 @@ def handle_messages():
 
     s_data = sort_data(data)
 
-    print(f'\x1b[32m\x1b[0m Sending message to numbers:')
+    print('\x1b[32m\x1b[0m Sending message to numbers:')
     print("\x1b[32m the database will be updated with each message sent!\x1b[0m")
     msg_send = 0
     print("\x1b[32m󰖟\x1b[0m Loading site!")
@@ -224,7 +225,7 @@ def handle_messages():
             else:
                 f_num = f_num + l
 
-        if client["alreadySend"] == False:
+        if not client["alreadySend"]:
             send_message(f_num)
             client["alreadySend"] = True
             msg_send += 1
