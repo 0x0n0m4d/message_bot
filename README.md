@@ -40,15 +40,8 @@ python3 ./message_bot.py
 
 **_Não remova o arquivo `database.json` criado_**
 
-## TODO
-- [x] Create a simple number randomizer;
-- [x] Create the request that get possible ids of users;
-- [x] Gather only ids;
-- [x] The script needs go through all pages where users exists
-- [x] Create the request that get numbers of users;
-- [x] Save collected numbers in json database
-- [x] Create function to send messages to numbers
-- [x] Create logic to prevent clients duplicates
-- [x] Optimize the process to send messages
-- [x] Add option to send messages to numbers that are in the database but haven't received the message yet
-- [ ] Add template image in template msg
+## Diferenças
+
+Essa versão do bot remete aos princípios do código, aonde reunia todos os números do site dentro do banco de dados.
+
+Ainda inclui a remoção de duplicatas
