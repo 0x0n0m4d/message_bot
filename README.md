@@ -42,6 +42,8 @@ python3 ./message_bot.py
 
 ## Diferenças
 
-Essa versão do bot remete aos princípios do código, aonde reunia todos os números do site dentro do banco de dados.
+Essa versão do bot remete aos princípios do código, aonde reunia **todos** os números do site dentro do banco de dados.
 
-Ainda inclui a remoção de duplicatas
+Tem uma modificação aonde **limita** a quantidade de mensagens que vão ser enviadas.
+
+*Nota: Ainda inclui a remoção de duplicatas*
