@@ -163,13 +163,10 @@ def get_clients():
                     "alreadySend": False
                 })
 
-        if len(clients) >= 200:
-            f_clients = remove_dupl_and_sort(clients)
-            # save all clients
-            with open('database.json', mode='w', encoding="utf8") as fout:
-                json.dump(f_clients, fout)
-
-            break
+    f_clients = remove_dupl_and_sort(clients)
+    # save all clients
+    with open('database.json', mode='w', encoding="utf8") as fout:
+        json.dump(f_clients, fout)
 
     print("\x1b[32m[+] " + str(len(clients)) + " ids collecteds!\x1b[0m")
     print("\x1b[32m database has been updated!\x1b[0m")
@@ -225,7 +222,7 @@ def handle_messages():
             else:
                 f_num = f_num + l
 
-        if not client["alreadySend"]:
+        if not client["alreadySend"] and msg_send <= 200:
             send_message(f_num)
             client["alreadySend"] = True
             msg_send += 1
